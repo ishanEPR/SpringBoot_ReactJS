@@ -39,7 +39,7 @@ public class EmployeeController {
 	}
 	
 	
-	//get employee by id
+	//get employee byid 
 	@GetMapping("/employees/{id}")
 	public ResponseEntity<Employee>  getEmployeeById(@PathVariable long id) {
 		Employee employee=employeeRepository.findById(id)
