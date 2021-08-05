@@ -1,8 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import EmployeeService from '../services/EmployeeService';
 
-export default class CreateEmployeeComponent extends Component {
-
+export default class UpdateEmployeeComponents extends Component {
     constructor(props){
         super(props)
 
@@ -14,35 +13,26 @@ export default class CreateEmployeeComponent extends Component {
         }
         this.changeFirstNameHandler=this.changeFirstNameHandler.bind(this);
         this.changeLastNameHandler=this.changeLastNameHandler.bind(this);
-        this.saveOrUpdateEmployee=this.saveOrUpdateEmployee.bind(this);
+        this.updateEmployee=this.updateEmployee.bind(this);
 
 
 
     }
 
     componentDidMount(){
+        EmployeeService.getEmployeeById(this.state.id).then((res)=>{
+            let employee=res.data;
+            this.setState({
+                firstName: employee.firstName,
+                lastName: employee.lastName,
+                emailId: employee.emailId
+            });
+        })
 
-        if(this.state.id ==='_add')
-        {
-            return
-
-        }else{
-            EmployeeService.getEmployeeById(this.state.id).then((res)=>{
-                let employee=res.data;
-                this.setState({
-                    firstName: employee.firstName,
-                    lastName: employee.lastName,
-                    emailId: employee.emailId
-                });
-            })
-    
-
-        }
-        
 
     }
 
-    saveOrUpdateEmployee= (e)=>{
+    updateEmployee= (e)=>{
         e.preventDefault();
         let employee={
             firstName: this.state.firstName,
@@ -51,23 +41,9 @@ export default class CreateEmployeeComponent extends Component {
         };
 
         console.log('employee=>'+ JSON.stringify(employee));
-
-        if(this.state.id === '_add')
-        {
-            EmployeeService.createEmployee(employee).then(res=>{
-                this.props.history.push("/");
-            });
-
-        }else{
-
-            EmployeeService.updateEmployee(employee,this.state.id).then(res=>{
-                this.props.history.push("/");
-            });
-
-        }
-
-
-       
+         EmployeeService.updateEmployee(employee,this.state.id).then(res=>{
+             this.props.history.push("/");
+         });
 
 
     }
@@ -98,26 +74,13 @@ export default class CreateEmployeeComponent extends Component {
         this.props.history.push('/');
     }
 
-    getTitle(){
-        if(this.state.id === '_add'){
-           return <h3 className="text-center">Add Employee</h3>
-
-        }else{
-          return  <h3 className="text-center">Update Employee</h3>
-            
-        }
-    }
-
     render(){
         return (
             <div>
                 <div className="container">
-                <br/><br/>
                     <div className="row">
                         <div className="card col-md-6 offset-md-3 offset-md-3">
-                            {
-                                this.getTitle()
-                            }
+                            <h3 className="text-center">Update Employee</h3>
                             <div className="card-body">
                                 <form>
                                     <div className="form-group">
@@ -159,7 +122,7 @@ export default class CreateEmployeeComponent extends Component {
 
                                     <button 
                                     className="btn btn-success"
-                                    onClick={this.saveOrUpdateEmployee}
+                                    onClick={this.updateEmployee}
                                     >Save</button>
                                       <button 
                                     className="btn btn-danger"
@@ -181,4 +144,5 @@ export default class CreateEmployeeComponent extends Component {
             </div>
         )
     }
+
 }
