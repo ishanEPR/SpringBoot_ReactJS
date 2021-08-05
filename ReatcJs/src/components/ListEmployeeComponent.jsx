@@ -9,7 +9,35 @@ import EmployeeService from '../services/EmployeeService'
             employees: []
         }
         this.addEmployee = this.addEmployee.bind(this); 
+        this.editEmployee=this.editEmployee.bind(this);
+        this.deleteEmployee=this.deleteEmployee.bind(this);
     }
+
+    viewEmployee(id){
+        this.props.history.push('/view-employee/'+id);
+    }
+
+
+    deleteEmployee(id)
+    {
+
+        //rest api
+        EmployeeService.deleteEmployee(id).then((res)=>{
+
+            this.setState({employees:this.state.employees.filter(employee=> employee.id !==id)});
+        })
+
+
+    }
+
+    editEmployee(id){
+
+        this.props.history.push("/add-employee/"+id);
+
+
+    }
+
+
     componentDidMount(){
         EmployeeService.getEmployee().then((res) =>{
             this.setState({employees: res.data});
@@ -17,7 +45,7 @@ import EmployeeService from '../services/EmployeeService'
     }
 
     addEmployee(){
-        this.props.history.push('/add-employee');
+        this.props.history.push('/add-employee/_add');
         
     }
     render() {
@@ -49,6 +77,11 @@ import EmployeeService from '../services/EmployeeService'
                                             <td>{employee.firstName}</td>
                                             <td>{employee.lastName}</td>
                                             <td>{employee.emailId}</td>
+                                            <td>
+                                                <button onClick={()=>this.editEmployee(employee.id)} className="btn btn-info">Update</button>
+                                                <button onClick={()=>this.deleteEmployee(employee.id)} style={{marginLeft:"10px"}} className="btn btn-danger">Delete</button>
+                                                <button onClick={()=>this.viewEmployee(employee.id)} style={{marginLeft:"10px"}} className="btn btn-info">View</button>
+                                            </td>
 
                                         </tr>
 
